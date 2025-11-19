@@ -1,0 +1,40 @@
+stateDiagram-v2
+[*] --> Idle: File Opened (Read-Only/Unlocked)
+
+    state "User Edits File" as UserAction
+    Idle --> UserAction: User types a character
+
+    state "Request Lock" as RequestLock {
+        UserAction --> CheckLocal: Plugin checks local state
+        CheckLocal --> ServerRequest: POST /lock
+        
+        state "Server Logic" as ServerLogic {
+            ServerRequest --> CheckDB: SELECT * FROM locks
+            CheckDB --> GrantLock: No active lock found
+            CheckDB --> DenyLock: Active lock exists (User B)
+        }
+    }
+
+    GrantLock --> LockedState: 200 OK
+    DenyLock --> ConflictState: 409 Conflict
+
+    state "Locked (Editing Allowed)" as LockedState {
+        [*] --> Editing
+        Editing --> Heartbeat: Every 30s
+        Heartbeat --> ServerUpdate: UPDATE locks SET timestamp
+        ServerUpdate --> Editing: 200 OK
+        
+        Editing --> Unlock: User saves/closes/stops
+    }
+
+    state "Conflict (Read-Only)" as ConflictState {
+        [*] --> ShowWarning: Display "File Locked by User B"
+        ShowWarning --> Idle: User cancels edit
+    }
+
+    Unlock --> Idle: DELETE /lock (or expiry)
+    
+    note right of Heartbeat
+        Prevents "Stale Locks" if
+        PC crashes or loses power.
+    end note
