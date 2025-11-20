@@ -1,0 +1,14 @@
+### Attempt to lock a file
+POST http://127.0.0.1:8080/lock
+Content-Type: application/json
+
+{
+  "filePath": "test_project/utils.java",
+  "user": "John Doe"
+}
+
+###
+
+### Attempt to GET a lock
+GET http://127.0.0.1:8080/lock?filePath=test_project/utils.java
+Accept: application/json

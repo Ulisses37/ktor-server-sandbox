@@ -1,5 +1,8 @@
 package com.ulissesarredondo
 
+import com.ulissesarredondo.plugins.configureRouting
+import com.ulissesarredondo.plugins.configureSerialization
+import com.ulissesarredondo.repository.DatabaseFactory
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
@@ -12,6 +15,7 @@ fun main() {
 fun Application.module() {
     configureSerialization()
     configureMonitoring()
-    configureDatabases()
+//    configureDatabases()
+    DatabaseFactory.init()
     configureRouting()
 }

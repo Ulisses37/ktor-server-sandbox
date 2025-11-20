@@ -1,4 +1,4 @@
-package com.ulissesarredondo
+package com.ulissesarredondo.repository
 
 import org.jetbrains.exposed.dao.IntEntity
 import org.jetbrains.exposed.dao.IntEntityClass
