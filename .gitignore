@@ -53,3 +53,4 @@ data.db-journal
 ### Logs ###
 *.log
 logs/
+.gitlogs
